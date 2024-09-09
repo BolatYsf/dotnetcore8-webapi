@@ -1,3 +1,7 @@
+using App.Repositories;
+using Microsoft.EntityFrameworkCore;
+using App.Repositories.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +10,10 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// inject at repo extensions class
+builder.Services.AddRepositories(builder.Configuration);
+
 
 var app = builder.Build();
 
