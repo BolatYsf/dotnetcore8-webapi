@@ -1,6 +1,7 @@
 using App.Repositories;
 using Microsoft.EntityFrameworkCore;
 using App.Repositories.Extensions;
+using App.Services.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,8 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// inject at repo extensions class
-builder.Services.AddRepositories(builder.Configuration);
+// inject at repo extensions class .. DI container
+builder.Services.AddRepositories(builder.Configuration).AddServices();
 
 
 var app = builder.Build();

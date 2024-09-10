@@ -10,6 +10,8 @@ namespace App.Repositories
 {
     public class GenericRepository<T>(AppDbContext dbContext) : IGenericRepository<T> where T : class
     {
+        protected AppDbContext Context = dbContext;
+
         private readonly DbSet<T> _dbSet=dbContext.Set<T>();
 
         // if i gonna manipule this data . i can use assnotracking so this data will not be storage in ram

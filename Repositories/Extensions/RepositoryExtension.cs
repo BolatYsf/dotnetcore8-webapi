@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using App.Repositories.Products;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +19,13 @@ namespace App.Repositories.Extensions
                     sqlServerOptionsAction.MigrationsAssembly(typeof(RepositoryAssembly).Assembly.FullName);
                 });
             });
+
+            // should use scoped lifecycle cause u use dbcontext so after scoped than dispose instance
+            services.AddScoped<IProductRepository,ProductRepository>();
+
+            services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
+
+
             return services;
         }
 
