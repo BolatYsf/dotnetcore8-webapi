@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace App.Services
 {
@@ -13,11 +9,14 @@ namespace App.Services
 
         public List<string>? ErrorMessage { get; set; }
 
+
+        // i use jsonignore attribute cause i dont wanna see those in response body
         // this property has only get method
+        [JsonIgnore]
         public bool IsSuccess => ErrorMessage == null || ErrorMessage.Count == 0;
-
+        [JsonIgnore]
         public bool IsFail => !IsSuccess;
-
+        [JsonIgnore]
         public HttpStatusCode Status { get; set; }
 
         // static factory method
@@ -45,10 +44,11 @@ namespace App.Services
 
         public List<string>? ErrorMessage { get; set; }
 
+        [JsonIgnore]
         public bool IsSuccess => ErrorMessage == null || ErrorMessage.Count == 0;
-
+        [JsonIgnore]
         public bool IsFail => !IsSuccess;
-
+        [JsonIgnore]
         public HttpStatusCode Status { get; set; }
 
         public static ServiceResult Success(HttpStatusCode status = HttpStatusCode.OK)

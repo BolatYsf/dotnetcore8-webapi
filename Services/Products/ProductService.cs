@@ -1,16 +1,17 @@
 ﻿using App.Repositories;
 using App.Repositories.Products;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 
 namespace App.Services.Products
 {
-    public class ProductService(IProductRepository productRepository , IUnitOfWork unitOfWork) : IProductService
+    public class ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork) : IProductService
     {
         public async Task<ServiceResult<List<ProductDto>>> GetTopPriceProductsAsync(int count)
         {
             var products = await productRepository.GetTopPriceProductsAsync(count);
 
-            var productAsDto = products.Select(p=> new ProductDto(p.Id,p.Name,p.Price,p.Stock)).ToList();
+            var productAsDto = products.Select(p => new ProductDto(p.Id, p.Name, p.Price, p.Stock)).ToList();
 
             return (new ServiceResult<List<ProductDto>>()
             {
@@ -18,21 +19,48 @@ namespace App.Services.Products
             });
         }
 
-        public async Task<ServiceResult<ProductDto>> GetProductByIdAsync(int id)
+        public async Task<ServiceResult<List<ProductDto>>> GetAllAsync()
+        {
+            var products = await productRepository.GetAll().ToListAsync();
+
+            var productAsResponse = products.Select(p => new ProductDto(p.Id, p.Name, p.Price, p.Stock)).ToList();
+
+            return ServiceResult<List<ProductDto>>.Success(productAsResponse);
+        }
+
+        public async Task<ServiceResult<List<ProductDto>>> GetPagedAllListAsync(int pageNumber , int pageSize)
+        {
+
+            int skip = (pageNumber - 1)* pageSize;
+
+            var products = await productRepository.GetAll().Skip(skip).Take(pageSize).ToListAsync();
+
+            var productAsDto = products.Select(p=> new ProductDto
+            (
+                p.Id,
+                p.Name,
+                p.Price,
+                p.Stock
+            )).ToList();
+
+            return ServiceResult<List<ProductDto>>.Success(productAsDto);
+        }
+
+        public async Task<ServiceResult<ProductDto?>> GetByIdAsync(int id)
         {
             var product = await productRepository.GetByIdAsync(id);
 
-            if( product is null)
+            if (product is null)
             {
-                return ServiceResult<ProductDto>.Fail("Product not found",HttpStatusCode.NotFound); 
+                return ServiceResult<ProductDto?>.Fail("Product not found", HttpStatusCode.NotFound);
             }
 
-            var productsAsDto = new ProductDto(product!.Id ,product.Name,product.Price,product.Stock);
+            var productsAsDto = new ProductDto(product!.Id, product.Name, product.Price, product.Stock);
 
-            return ServiceResult<ProductDto>.Success(productsAsDto!);
+            return ServiceResult<ProductDto>.Success(productsAsDto)!;
         }
 
-        public async Task<ServiceResult<CreateProductResponse>> CreateProductAsync (CreateProductRequest request)
+        public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
         {
             var product = new Product
             {
@@ -49,15 +77,16 @@ namespace App.Services.Products
             return ServiceResult<CreateProductResponse>.Success(new CreateProductResponse(product.Id));
         }
 
-        public async Task<ServiceResult> UpdateProductAsync (int id,UpdateProductRequest request)
+        public async Task<ServiceResult> UpdateAsync(int id, UpdateProductRequest request)
         {
             // Fast Fail 
             // Guard Clauses
             // i dont response update and delete requests
+            // i didnt write updateproductresponse record
 
-            var product = await productRepository.GetByIdAsync (id);
+            var product = await productRepository.GetByIdAsync(id);
 
-            if( product is null)
+            if (product is null)
             {
                 return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
             }
@@ -65,12 +94,30 @@ namespace App.Services.Products
             product.Price = request.Price;
             product.Stock = request.Stock;
             product.Name = request.Name;
-            
+
             productRepository.Update(product);
             await unitOfWork.SavechangesAsync();
 
             // response is 204 no content
             return ServiceResult.Success(HttpStatusCode.NoContent);
+        }
+
+        public async Task<ServiceResult> DeleteAsync(int id)
+        {
+            var product = await productRepository.GetByIdAsync(id);
+
+            if (product is null)
+            {
+                return ServiceResult.Fail("Product not found ", HttpStatusCode.NotFound);
+            }
+
+            productRepository.Delete(product);
+
+            await unitOfWork.SavechangesAsync();
+
+            return ServiceResult.Success(HttpStatusCode.NoContent);
+
+
         }
     }
 }
