@@ -18,6 +18,8 @@ namespace App.Services.Products
 
         Task<ServiceResult> UpdateAsync(int id, UpdateProductRequest request);
 
+        Task<ServiceResult> UpdateStockAsync(UpdateProductStockRequest request);
+
         Task<ServiceResult> DeleteAsync(int id);
 
         Task<ServiceResult<List<ProductDto>>> GetAllAsync();

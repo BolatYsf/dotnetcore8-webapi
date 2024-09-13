@@ -19,10 +19,18 @@ namespace App.Services
         [JsonIgnore]
         public HttpStatusCode Status { get; set; }
 
+        [JsonIgnore]
+        public string? UrlAsCreated { get; set; }
+
         // static factory method
         public static ServiceResult<T> Success(T data ,HttpStatusCode status=HttpStatusCode.OK)
         {
             return new ServiceResult<T> { Data = data ,Status=status};
+        }
+
+        public static ServiceResult<T> SuccessAsCreated(T data, string url)
+        {
+            return new ServiceResult<T> { Data = data, Status = HttpStatusCode.Created ,UrlAsCreated=url};
         }
 
         public static ServiceResult<T> Fail(List<string> errorMessage , HttpStatusCode status = HttpStatusCode.BadRequest)
