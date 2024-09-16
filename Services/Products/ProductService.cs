@@ -62,6 +62,15 @@ namespace App.Services.Products
 
         public async Task<ServiceResult<CreateProductResponse>> CreateAsync(CreateProductRequest request)
         {
+
+            // second method manuel async validation .. best practice
+            var anyProduct = await productRepository.Where(x => x.Name == request.Name).AnyAsync();
+
+            if (anyProduct)
+            {
+                return ServiceResult<CreateProductResponse>.Fail("Product name already exists", HttpStatusCode.BadRequest);
+            }
+
             var product = new Product
             {
                 Name = request.Name,
