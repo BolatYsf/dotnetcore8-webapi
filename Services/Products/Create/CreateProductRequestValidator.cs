@@ -7,16 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace App.Services.Products
+namespace App.Services.Products.Create
 {
-    public sealed  class CreateProductRequestValidator:AbstractValidator<CreateProductRequest>
+    public sealed class CreateProductRequestValidator : AbstractValidator<CreateProductRequest>
     {
         private readonly IProductRepository _productRepository;
         public CreateProductRequestValidator(IProductRepository productRepository)
         {
             RuleFor(x => x.Name).NotNull().WithMessage("ProductName is required").Length(3, 10).WithMessage("Name have to be 3-10 character");
-                //.MustAsync(MustUniqueProductNameAsync).WithMessage("Name already exists");
-                //.Must(MustUniqueProductName).WithMessage("Product name  already exists");
+            //.MustAsync(MustUniqueProductNameAsync).WithMessage("Name already exists");
+            //.Must(MustUniqueProductName).WithMessage("Product name  already exists");
 
             RuleFor(x => x.Price).GreaterThan(0).WithMessage("Price have to be bigger than zero.");
 
@@ -28,7 +28,7 @@ namespace App.Services.Products
         //private bool MustUniqueProductName(string productName)
         //{
         //    return !_productRepository.Where(x=>x.Name == productName).Any();
-            
+
         //}
 
         //private async Task<bool> MustUniqueProductNameAsync(string productName ,CancellationToken cancellationToken)
