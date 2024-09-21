@@ -3,6 +3,7 @@ using App.Repositories.Products;
 using App.Services.ExceptionHandlers;
 using App.Services.Products.Create;
 using App.Services.Products.Update;
+using App.Services.Products.UpdateStock;
 using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
@@ -15,7 +16,9 @@ namespace App.Services.Products
         {
             var products = await productRepository.GetTopPriceProductsAsync(count);
 
-            var productAsDto = products.Select(p => new ProductDto(p.Id, p.Name, p.Price, p.Stock)).ToList();
+            //var productAsDto = products.Select(p => new ProductDto(p.Id, p.Name, p.Price, p.Stock)).ToList();
+
+            var productAsDto = mapper.Map<List<ProductDto>>(products);
 
             return (new ServiceResult<List<ProductDto>>()
             {
@@ -92,12 +95,18 @@ namespace App.Services.Products
                 return ServiceResult<CreateProductResponse>.Fail("Product name already exists", HttpStatusCode.BadRequest);
             }
 
-            var product = new Product
-            {
-                Name = request.Name,
-                Price = request.Price,
-                Stock = request.Stock,
-            };
+            // manuel mapping
+            //var product = new Product
+            //{
+            //    Name = request.Name,
+            //    Price = request.Price,
+            //    Stock = request.Stock,
+            //};
+
+            // mapper
+
+            var product = mapper.Map<Product>(request);
+
 
 
             await productRepository.AddAsync(product);
@@ -121,9 +130,18 @@ namespace App.Services.Products
                 return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
             }
 
-            product.Price = request.Price;
-            product.Stock = request.Stock;
-            product.Name = request.Name;
+            var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != product.Id).AnyAsync();
+
+            if (isProductNameExist)
+            {
+                return ServiceResult.Fail("Product name already exists", HttpStatusCode.BadRequest);
+            }
+
+            //product.Price = request.Price;
+            //product.Stock = request.Stock;
+            //product.Name = request.Name;
+
+            product= mapper.Map(request, product);
 
             productRepository.Update(product);
             await unitOfWork.SavechangesAsync();
