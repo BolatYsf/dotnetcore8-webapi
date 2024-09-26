@@ -1,4 +1,5 @@
 ﻿using App.Repositories.Categories;
+using App.Repositories.Interceptors;
 using App.Repositories.Products;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +20,8 @@ namespace App.Repositories.Extensions
                     // i want it to migration to the class library here 
                     sqlServerOptionsAction.MigrationsAssembly(typeof(RepositoryAssembly).Assembly.FullName);
                 });
+
+                opt.AddInterceptors( new AuditDbContextInterceptor());
             });
 
             // should use scoped lifecycle cause u use dbcontext so after scoped than dispose instance

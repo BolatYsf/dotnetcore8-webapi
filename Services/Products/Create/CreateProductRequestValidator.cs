@@ -1,11 +1,5 @@
 ﻿using App.Repositories.Products;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace App.Services.Products.Create
 {
@@ -19,6 +13,8 @@ namespace App.Services.Products.Create
             //.Must(MustUniqueProductName).WithMessage("Product name  already exists");
 
             RuleFor(x => x.Price).GreaterThan(0).WithMessage("Price have to be bigger than zero.");
+
+            RuleFor(x => x.CategoryId).GreaterThan(0).WithMessage("Category have to be bigger than zero.");
 
             RuleFor(x => x.Stock).InclusiveBetween(1, 100).WithMessage("Stock quantity have to be 100 between 1 ");
             _productRepository = productRepository;

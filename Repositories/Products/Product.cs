@@ -3,7 +3,7 @@ using System.Security.Principal;
 
 namespace App.Repositories.Products
 {
-    public sealed class Product
+    public sealed class Product:IAuditEntity
     {
         public int Id { get; set; }
         public string Name { get; set; } = default!;
@@ -11,5 +11,7 @@ namespace App.Repositories.Products
         public int Stock { get; set; }
         public int CategoryId { get; set; }
         public Category Category { get; set; } =default!;
+        public DateTime Created { get ; set ; }
+        public DateTime? Updated { get ; set ; }
     }
 }
