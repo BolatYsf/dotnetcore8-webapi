@@ -123,14 +123,15 @@ namespace App.Services.Products
             // i dont response update and delete requests
             // i didnt write updateproductresponse record
 
-            var product = await productRepository.GetByIdAsync(id);
+            //var product = await productRepository.GetByIdAsync(id);
+            
+            // i m checkin with filter (Notfoundfilter) 
+            //if (product is null)
+            //{
+            //    return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
+            //}
 
-            if (product is null)
-            {
-                return ServiceResult.Fail("Product not found", HttpStatusCode.NotFound);
-            }
-
-            var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != product.Id).AnyAsync();
+            var isProductNameExist = await productRepository.Where(x => x.Name == request.Name && x.Id != id).AnyAsync();
 
             if (isProductNameExist)
             {
@@ -141,9 +142,12 @@ namespace App.Services.Products
             //product.Stock = request.Stock;
             //product.Name = request.Name;
 
-            product= mapper.Map(request, product);
+            //product= mapper.Map(request, product);
 
-            productRepository.Update(product);
+            var product = mapper.Map<Product>(request);
+            product.Id = id;
+
+            productRepository.Update(product!);
             await unitOfWork.SavechangesAsync();
 
             // response is 204 no content
@@ -155,10 +159,11 @@ namespace App.Services.Products
         {
             var product = await productRepository.GetByIdAsync(request.ProductId);
 
-            if (product is null)
-            {
-                return ServiceResult.Fail("Product not found",HttpStatusCode.NotFound);
-            }
+            // i m checkin with filter (Notfoundfilter) 
+            //if (product is null)
+            //{
+            //    return ServiceResult.Fail("Product not found",HttpStatusCode.NotFound);
+            //}
 
             product.Stock = request.Quantity;
 
@@ -172,10 +177,12 @@ namespace App.Services.Products
         {
             var product = await productRepository.GetByIdAsync(id);
 
-            if (product is null)
-            {
-                return ServiceResult.Fail("Product not found ", HttpStatusCode.NotFound);
-            }
+            // i m checkin with filter (Notfoundfilter) 
+
+            //if (product is null)
+            //{
+            //    return ServiceResult.Fail("Product not found ", HttpStatusCode.NotFound);
+            //}
 
             productRepository.Delete(product);
 

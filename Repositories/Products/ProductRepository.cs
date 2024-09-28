@@ -2,7 +2,7 @@
 
 namespace App.Repositories.Products
 {
-    public class ProductRepository(AppDbContext dbContext) : GenericRepository<Product>(dbContext), IProductRepository
+    public class ProductRepository(AppDbContext dbContext) : GenericRepository<Product,int>(dbContext), IProductRepository
     {
         public Task<List<Product>> GetTopPriceProductsAsync(int count)
         {

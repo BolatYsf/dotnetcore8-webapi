@@ -80,21 +80,22 @@ namespace App.Services.Categories
 
         public async Task<ServiceResult> UpdateAsync(int id, UpdateCategoryRequest request)
         {
-            var category = await categoryRepository.GetByIdAsync(id);
+            //var category = await categoryRepository.GetByIdAsync(id);
 
-            if (category == null)
-            {
-                return ServiceResult.Fail("Category not found", System.Net.HttpStatusCode.NotFound);
-            }
+            //if (category == null)
+            //{
+            //    return ServiceResult.Fail("Category not found", System.Net.HttpStatusCode.NotFound);
+            //}
 
-            var iscategoryNameExist = await categoryRepository.Where(x => x.Name == request.Name && x.Id != category.Id).AnyAsync();
+            var iscategoryNameExist = await categoryRepository.Where(x => x.Name == request.Name && x.Id != id).AnyAsync();
 
             if (iscategoryNameExist)
             {
                 return ServiceResult.Fail("Category is already exists", System.Net.HttpStatusCode.BadRequest);
             }
 
-            category = mapper.Map(request, category);
+            var category = mapper.Map<Category>(request);
+            category.Id = id;
 
             categoryRepository.Update(category);
             await unitOfWork.SavechangesAsync();
@@ -107,10 +108,10 @@ namespace App.Services.Categories
         {
             var category = await categoryRepository.GetByIdAsync(id);
 
-            if (category == null)
-            {
-                return ServiceResult.Fail("Category not found", System.Net.HttpStatusCode.NotFound);
-            }
+            //if (category == null)
+            //{
+            //    return ServiceResult.Fail("Category not found", System.Net.HttpStatusCode.NotFound);
+            //}
 
             categoryRepository.Delete(category);
             await unitOfWork.SavechangesAsync();
