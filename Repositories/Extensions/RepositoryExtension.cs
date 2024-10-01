@@ -27,7 +27,7 @@ namespace App.Repositories.Extensions
             // should use scoped lifecycle cause u use dbcontext so after scoped than dispose instance
             services.AddScoped<IProductRepository,ProductRepository>();
 
-            services.AddScoped(typeof(IGenericRepository<,>),typeof(GenericRepository<,>));
+            services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 
             services.AddScoped<IUnitOfWork,UnitOfWork>();
 

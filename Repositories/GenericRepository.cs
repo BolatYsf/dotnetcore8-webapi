@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace App.Repositories
 {
-    public class GenericRepository<T,TId>(AppDbContext dbContext) : IGenericRepository<T,TId> where T : BaseEntity<TId> where TId : struct
+    public class GenericRepository<T>(AppDbContext dbContext) : IGenericRepository<T> where T : class
     {
         protected AppDbContext Context = dbContext;
 
@@ -16,8 +16,6 @@ namespace App.Repositories
 
         // if i gonna manipule this data . i can use assnotracking so this data will not be storage in ram
         public async ValueTask AddAsync(T entity)=> await _dbSet.AddAsync(entity);
-
-        public  Task<bool> AnyAsync(TId id) => _dbSet.AnyAsync(x=>x.Id.Equals(id));
 
         public void Delete(T entity)=> _dbSet.Remove(entity);
 

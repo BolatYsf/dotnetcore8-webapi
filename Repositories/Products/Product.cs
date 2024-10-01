@@ -3,9 +3,9 @@ using System.Security.Principal;
 
 namespace App.Repositories.Products
 {
-    public sealed class Product:BaseEntity<int>,IAuditEntity
+    public sealed class Product:IAuditEntity
     {
-       
+        public int Id { get; set; }
         public string Name { get; set; } = default!;
         public decimal Price { get; set; }
         public int Stock { get; set; }
