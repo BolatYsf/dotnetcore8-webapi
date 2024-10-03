@@ -1,10 +1,7 @@
-﻿
-using App.Services.ExceptionHandlers;
-using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using App.Domain.Exceptions;
 
-
-namespace Clean.API.ExceptionHandlers
+namespace App.Services.ExceptionHandlers
 {
     public class CriticalExceptionHandler : IExceptionHandler
     {
