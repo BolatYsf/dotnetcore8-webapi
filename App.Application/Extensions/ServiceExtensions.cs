@@ -1,14 +1,12 @@
-﻿using App.Services.Categories;
-using App.Services.ExceptionHandlers;
-using App.Services.Products;
-using Clean.API.ExceptionHandlers;
+﻿using App.Application.Features.Categories;
+using App.Application.Features.Products;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace App.Services.Extensions
+namespace App.Application.Extensions
 {
     public static class ServiceExtensions
     {
@@ -25,9 +23,9 @@ namespace App.Services.Extensions
 
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            services.AddExceptionHandler<CriticalExceptionHandler>();
+            //services.AddExceptionHandler<CriticalExceptionHandler>();
 
-            services.AddExceptionHandler<GlobalExceptionHandler>();
+            //services.AddExceptionHandler<GlobalExceptionHandler>();
 
             return services;
         }
