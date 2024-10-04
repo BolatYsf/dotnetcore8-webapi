@@ -1,38 +1,51 @@
-
 using App.Application.Extensions;
 using App.Persistence.Extensions;
-using App.Services.ExceptionHandlers;
-using Clean.API.ExceptionHandlers;
-using Clean.API.Filter;
-using Clean.API.Filters;
+using Clean.API.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers(opt =>
-{
+#region Controller
+//builder.Services.AddControllers(opt =>
+//{
 
-    opt.Filters.Add<FluentValidationFilter>();
-    opt.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+//    opt.Filters.Add<FluentValidationFilter>();
+//    opt.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
 
 
-});
+//});
+#endregion
+// extensions 
+builder.Services.AddControllersWithFiltersExt();
 
 // i blocked dotnet validation filter
 builder.Services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInvalidFilter = true);
 
+#region Swagger
+//builder.Services.AddEndpointsApiExplorer();
+//builder.Services.AddSwaggerGen();
+#endregion
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGenExt();
 
 // inject at repo extensions class .. DI container
 builder.Services.AddRepositories(builder.Configuration).AddServices(builder.Configuration);
-builder.Services.AddScoped(typeof(NotFoundFilter<,>));
-builder.Services.AddExceptionHandler<CriticalExceptionHandler>();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+//builder.Services.AddScoped(typeof(NotFoundFilter<,>));
+
+#region Exception
+//builder.Services.AddExceptionHandler<CriticalExceptionHandler>();
+//builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+#endregion
+builder.Services.AddExceptionHandlerExt();
+
+#region CacheService
+//builder.Services.AddMemoryCache();
+//builder.Services.AddSingleton<ICacheService,CacheService>();
+#endregion
+builder.Services.CachingExt();
 
 var app = builder.Build();
 
@@ -41,9 +54,14 @@ app.UseExceptionHandler(x => { });
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    #region Swagger
+    //    app.UseSwagger();
+    //    app.UseSwaggerUI();
+    #endregion
+    app.UseSwaggerExt();
 }
+
+
 
 app.UseHttpsRedirection();
 
