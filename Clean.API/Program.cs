@@ -1,5 +1,6 @@
 using App.Application.Extensions;
 using App.Persistence.Extensions;
+using App_Bus;
 using Clean.API.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ builder.Services.Configure<ApiBehaviorOptions>(opt => opt.SuppressModelStateInva
 builder.Services.AddSwaggerGenExt();
 
 // inject at repo extensions class .. DI container
-builder.Services.AddRepositories(builder.Configuration).AddServices(builder.Configuration);
+builder.Services.AddRepositories(builder.Configuration).AddServices(builder.Configuration).AddBusExt(builder.Configuration);
 
 //builder.Services.AddScoped(typeof(NotFoundFilter<,>));
 
