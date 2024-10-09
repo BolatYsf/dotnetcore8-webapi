@@ -7,10 +7,12 @@ using App.Application.Features.Products.UpdateStock;
 using App.Application.Contracts.Persistence;
 using App.Domain.Entities;
 using App.Application.Contracts.Caching;
+using App.Application.Contracts.ServiceBus;
+using App.Domain.Events;
 
 namespace App.Application.Features.Products
 {
-    public class ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork ,IMapper mapper ,ICacheService cacheService) : IProductService
+    public class ProductService(IProductRepository productRepository, IUnitOfWork unitOfWork ,IMapper mapper ,ICacheService cacheService,IServiceBus serviceBus) : IProductService
     {
 
         private const string ProductListCacheKey = "ProductListCacheKey";
@@ -127,6 +129,11 @@ namespace App.Application.Features.Products
             await productRepository.AddAsync(product);
 
             await unitOfWork.SavechangesAsync();
+
+            // send event to rabbitmq
+
+            await serviceBus.PublishAsync(new ProductAddedEvent(product.Id, product.Name ,product.Price));
+
 
             return ServiceResult<CreateProductResponse>.SuccessAsCreated(new CreateProductResponse(product.Id),$"api/products/{product.Id}");
         }
